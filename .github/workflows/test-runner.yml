@@ -1,0 +1,17 @@
+name: Execute Postman collection tests
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone the repo
+      uses: actions/checkout@v3
+      
+    - uses: actions/checkout@master
+    - name: Execute tests
+      uses: matt-ball/newman-action@master
+      with:
+         collection: petstore.postman_collection.json
+         reporters: '["cli", "json"]'
