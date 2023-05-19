@@ -1,0 +1,720 @@
+{
+	"info": {
+		"_postman_id": "a1154bc1-c14e-436e-8206-20a565595596",
+		"name": "petstore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test login\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"  pm.expect(jsonData.code).to.eql(200);\r",
+							"  pm.expect(jsonData.message).to.include(\"logged in user session:\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/login?username={{username}}&password={{password}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"login"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "{{username}}"
+						},
+						{
+							"key": "password",
+							"value": "{{password}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get available pets",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const schema = { \r",
+							"\t\"type\": \"array\",\r",
+							"\t\"items\":{ \r",
+							"\t\t\"type\": \"object\",\r",
+							"\t\t\"required\": [\r",
+							"\t\t\t\"id\",\r",
+							"\t\t\t\"name\",\r",
+							"\t\t\t\"photoUrls\",\r",
+							"\t\t\t\"tags\",\r",
+							"\t\t\t\"status\"\r",
+							"\t\t],\r",
+							"\t\t\"properties\": {\r",
+							"\t\t\t\"id\": {\r",
+							"\t\t\t\t\"type\": \"integer\",\r",
+							"\t\t\t},\r",
+							"\t\t\t\"category\": {\r",
+							"\t\t\t\t\"type\": \"object\",\r",
+							"\t\t\t\t\"required\": [\r",
+							"\t\t\t\t\t\"id\",\r",
+							"\t\t\t\t\t\"name\"\r",
+							"\t\t\t\t],\r",
+							"\t\t\t\t\"properties\": {\r",
+							"\t\t\t\t\t\"id\": {\r",
+							"\t\t\t\t\t\t\"type\": \"integer\"\r",
+							"\t\t\t\t\t},\r",
+							"\t\t\t\t\t\"name\": { \r",
+							"\t\t\t\t\t\t\"type\": \"string\"\r",
+							"\t\t\t\t\t}\r",
+							"\t\t\t\t}\r",
+							"\t\t\t},\r",
+							"\t\t\t\"name\": {\r",
+							"\t\t\t\t\"type\": \"string\"\r",
+							"\t\t\t},\r",
+							"\t\t\t\"photoUrls\": { \r",
+							"\t\t\t\t\"type\": \"array\",\r",
+							"\t\t\t\t\"default\": [],\r",
+							"\t\t\t\t\"items\":{\r",
+							"\t\t\t\t\t\"type\": \"string\"\r",
+							"\t\t\t\t}\r",
+							"\t\t\t},\r",
+							"\t\t\t\"tags\": {\r",
+							"\t\t\t\t\"type\": \"array\",\r",
+							"\t\t\t\t\"items\":{\r",
+							"\t\t\t\t\t\"type\": \"object\",\r",
+							"\t\t\t\t\t\"required\": [\r",
+							"\t\t\t\t\t\t\"id\",\r",
+							"\t\t\t\t\t\t\"name\"\r",
+							"\t\t\t\t\t],\r",
+							"\t\t\t\t\t\"properties\": {\r",
+							"\t\t\t\t\t\t\"id\": {\r",
+							"\t\t\t\t\t\t\t\"type\": \"integer\"\r",
+							"\t\t\t\t\t\t},\r",
+							"\t\t\t\t\t\t\"name\": {\r",
+							"\t\t\t\t\t\t\t\"type\": \"string\"\r",
+							"\t\t\t\t\t\t}\r",
+							"\t\t\t\t\t}\r",
+							"\t\t\t\t}\r",
+							"\t\t\t},\r",
+							"\t\t\t\"status\": { \r",
+							"\t\t\t\t\"type\": \"string\"\r",
+							"\t\t\t}\r",
+							"\t\t}\r",
+							"\t}\r",
+							"}\r",
+							"\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test get pets response\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    // Check the response\r",
+							"  pm.response.to.have.jsonSchema(schema);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/pet/findByStatus?status=available",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "available"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a new pet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseString = pm.response.text();\r",
+							"let regexPattern = /(?!\"id\":)(\\d+)/s\r",
+							"pm.environment.set(\"validPetId\", responseString.match(regexPattern)[1]);\r",
+							"\r",
+							"pm.test(\"Test create a new pet response\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.category.name).to.eql(\"dog\");\r",
+							"  pm.expect(jsonData.tags[0].name).to.eql(\"Small\");\r",
+							"  pm.expect(jsonData.status).to.eql(\"available\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"category\": {\r\n    \"id\": 1,\r\n    \"name\": \"dog\"\r\n  },\r\n  \"name\": \"doggie\",\r\n  \"photoUrls\": [\r\n    \"https://test.com\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 22,\r\n      \"name\": \"Small\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/pet",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get pet by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test get pet by ID response\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.id).to.be.an(\"number\");\r",
+							"  pm.expect(jsonData.category).to.be.an(\"object\");\r",
+							"  pm.expect(jsonData.category.id).to.be.an(\"number\");\r",
+							"  pm.expect(jsonData.category.name).to.be.an(\"string\");\r",
+							"  pm.expect(jsonData.name).to.be.an(\"string\");\r",
+							"  pm.expect(jsonData.photoUrls).to.be.an(\"array\");\r",
+							"  pm.expect(jsonData.photoUrls[0]).to.include.oneOf([\"http://\", \"https://\"]);\r",
+							"  pm.expect(jsonData.tags).to.be.an(\"array\");\r",
+							"  pm.expect(jsonData.tags[0].id).to.be.an(\"number\");\r",
+							"  pm.expect(jsonData.tags[0].name).to.be.an(\"string\");\r",
+							"  pm.expect(jsonData.status).to.eql(\"available\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/pet/{{validPetId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"pet",
+						"{{validPetId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get pet by invalid ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test get pets response - Invalid Invalid\", () => {\r",
+							"  pm.response.to.have.status(404);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.code).to.be.an(\"number\");\r",
+							"  pm.expect(jsonData.type).to.be.an(\"string\");\r",
+							"  pm.expect(jsonData.message).to.be.an(\"string\");\r",
+							"  pm.expect(jsonData.code).to.eql(1);\r",
+							"  pm.expect(jsonData.type).to.eql(\"error\");\r",
+							"  pm.expect(jsonData.message).to.eql(\"Pet not found\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/pet/9223372036854638096",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"pet",
+						"9223372036854638096"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a pet order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const validPetId = pm.environment.get(\"validPetId\");\r",
+							"const currentdate = pm.environment.get(\"currentdate\");\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test pets order creation response\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.id).to.be.an(\"number\");\r",
+							"  pm.expect(jsonData.petId).to.eql(validPetId);\r",
+							"  pm.expect(jsonData.quantity).to.eql(0);\r",
+							"  pm.expect(jsonData.shipDate).to.include(currentdate);\r",
+							"  pm.expect(jsonData.status).to.eql(\"unavailable\");\r",
+							"  pm.expect(jsonData.complete).to.be.an(\"boolean\");\r",
+							"  pm.expect(jsonData.complete).to.eql(true);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var moment = require('moment');\r",
+							"\r",
+							"pm.environment.set('currentdate', moment().format((\"YYYY-MM-DDTHH:MM\")));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"petId\": {{validPetId}},\r\n  \"quantity\": 0,\r\n  \"shipDate\": \"{{currentdate}}\",\r\n  \"status\": \"unavailable\",\r\n  \"complete\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/store/order",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"store",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a pet order with invalid data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test pets order creation error response\", () => {\r",
+							"  pm.response.to.have.status(400);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.code).to.eql(400);\r",
+							"  pm.expect(jsonData.type).to.eql(\"unknown\");\r",
+							"  pm.expect(jsonData.message).to.eql(\"bad input\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var moment = require('moment');\r",
+							"\r",
+							"pm.environment.set('currentdate', moment());"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"petId\": {{validPetId}},\r\n  \"quantity\": 0,\r\n  \"shipDate\": {{currentdate}},\r\n  \"status\": \"unavailable\",\r\n  \"complete\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/store/order",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"store",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"newUserId\", jsonData.message);\r",
+							"\r",
+							"pm.test(\"Test user creation response\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.code).to.eql(200);\r",
+							"  pm.expect(jsonData.type).to.eql('unknown');\r",
+							"  pm.expect(jsonData.message).to.be.an(\"string\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"{{currentdate}}\",\r\n  \"firstName\": \"{{currentdate}} firstname\",\r\n  \"lastName\": \"{{currentdate}} lasttname\",\r\n  \"email\": \"test@test.com\",\r\n  \"password\": \"password\",\r\n  \"phone\": \"1234567\",\r\n  \"userStatus\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const currentdate = pm.environment.get(\"currentdate\");\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test user not found response\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.code).to.eql(200);\r",
+							"  pm.expect(jsonData.type).to.eql(\"unknown\");\r",
+							"  pm.expect(jsonData.message).to.be.an(\"string\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"{{newUserId}}\",\r\n  \"firstName\": \"new firstname\",\r\n  \"lastName\": \"new lastname\",\r\n  \"email\": \"test@test.com\",\r\n  \"password\": \"new password\",\r\n  \"phone\": \"12345\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/{{currentdate}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{currentdate}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user with invalid data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test user not found response\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.code).to.eql(200);\r",
+							"  pm.expect(jsonData.type).to.eql(\"unknown\");\r",
+							"  pm.expect(jsonData.message).to.eql(\"1\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"username\": \"new username\",\r\n  \"firstName\": \"new firstname\",\r\n  \"lastName\": \"new lastname\",\r\n  \"email\": \"test@test.com\",\r\n  \"password\": \"new password\",\r\n  \"phone\": \"12345\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const newUser = pm.environment.get(\"newUserId\");\r",
+							"const newUserId = parseInt(newUser);\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test get user updated response\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.id).to.eql(newUserId);\r",
+							"  pm.expect(jsonData.username).to.eql(newUser);\r",
+							"  pm.expect(jsonData.firstName).to.eql(\"new firstname\");\r",
+							"  pm.expect(jsonData.lastName).to.eql(\"new lastname\");\r",
+							"  pm.expect(jsonData.email).to.eql(\"test@test.com\");\r",
+							"  pm.expect(jsonData.password).to.eql(\"new password\");\r",
+							"  pm.expect(jsonData.phone).to.eql(\"12345\");\r",
+							"  pm.expect(jsonData.userStatus).to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/{{newUserId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{newUserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user with invalid data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test user not found response\", () => {\r",
+							"  pm.response.to.have.status(404);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.code).to.eql(1);\r",
+							"  pm.expect(jsonData.type).to.eql(\"error\");\r",
+							"  pm.expect(jsonData.message).to.eql(\"User not found\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/aninvalidname",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"aninvalidname"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Test logout\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"    // Check the response\r",
+							"  pm.expect(jsonData.code).to.eql(200);\r",
+							"  pm.expect(jsonData.type).to.eql(\"unknown\");\r",
+							"  pm.expect(jsonData.message).to.eql(\"ok\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user/logout",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": "test",
+			"type": "default"
+		},
+		{
+			"key": "password",
+			"value": "test",
+			"type": "default"
+		},
+		{
+			"key": "petsSchema",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://petstore.swagger.io/v2",
+			"type": "default"
+		},
+		{
+			"key": "validPetId",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
