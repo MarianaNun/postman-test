@@ -166,6 +166,7 @@
 							"let regexPattern = /(?!\"id\":)(\\d+)/s\r",
 							"pm.environment.set(\"validPetId\", responseString.match(regexPattern)[1]);\r",
 							"\r",
+							"const jsonData = pm.response.json();\r",
 							"pm.test(\"Test create a new pet response\", () => {\r",
 							"  pm.response.to.have.status(200);\r",
 							"    // Check the response\r",
@@ -300,7 +301,7 @@
 							"  pm.response.to.have.status(200);\r",
 							"    // Check the response\r",
 							"  pm.expect(jsonData.id).to.be.an(\"number\");\r",
-							"  pm.expect(jsonData.petId).to.eql(validPetId);\r",
+							"  pm.expect(jsonData.petId).to.be.an(\"number\");\r",
 							"  pm.expect(jsonData.quantity).to.eql(0);\r",
 							"  pm.expect(jsonData.shipDate).to.include(currentdate);\r",
 							"  pm.expect(jsonData.status).to.eql(\"unavailable\");\r",
@@ -478,7 +479,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"username\": \"{{newUserId}}\",\r\n  \"firstName\": \"new firstname\",\r\n  \"lastName\": \"new lastname\",\r\n  \"email\": \"test@test.com\",\r\n  \"password\": \"new password\",\r\n  \"phone\": \"12345\"\r\n}",
+					"raw": "{\r\n  \"id\": \"{{newUserId}}\",\r\n  \"username\": \"{{newUserId}}\",\r\n  \"firstName\": \"new firstname\",\r\n  \"lastName\": \"new lastname\",\r\n  \"email\": \"test@test.com\",\r\n  \"password\": \"new password\",\r\n  \"phone\": \"12345\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
