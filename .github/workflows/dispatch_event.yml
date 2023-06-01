@@ -9,8 +9,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: ${{github.event.inputs.id}}
-        run: echo run identifier ${{ inputs.id }}
       - name: Env vars
         env:
           cli-foo: ${{ inputs.foo }}
@@ -18,3 +16,5 @@ jobs:
         run: |
          echo "Tenant-Name: ${cli-foo}"
          echo "Tenant-ID: ${cli-bar}"
+      - name: Test Failure
+        run: exit 1
