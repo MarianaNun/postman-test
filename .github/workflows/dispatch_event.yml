@@ -13,8 +13,8 @@ jobs:
         run: echo run identifier ${{ inputs.id }}
       - name: Env vars
         env:
-          cli-foo: ${{ github.event.client_payload.foo }}
-          cli-bar: ${{ github.event.client_payload.bar }}
+          cli-foo: ${{ inputs.foo }}
+          cli-bar: ${{ inputs.bar }}
         run: |
          echo "Tenant-Name: ${cli-foo}"
          echo "Tenant-ID: ${cli-bar}"
