@@ -17,3 +17,7 @@ jobs:
       with:
          collection: petstore.postman_collection.json
          reporters: '["cli", "json"]'
+    - name: Env vars
+      run: |
+       echo "Tenant-Name: ${foo}"
+       echo "Tenant-ID: ${bar}"
