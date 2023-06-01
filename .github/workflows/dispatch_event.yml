@@ -1,15 +1,14 @@
 name: action-test
+
 on:
   workflow_dispatch:
     inputs:
-      distinct_id:
-
+      foo:
+      BAR:
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: echo distinct ID ${{ github.event.inputs.distinct_id }}
-        run: echo ${{ github.event.inputs.distinct_id }}
       - name: ${{github.event.inputs.id}}
         run: echo run identifier ${{ inputs.id }}
       - name: Env vars
