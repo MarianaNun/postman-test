@@ -18,6 +18,9 @@ jobs:
          collection: petstore.postman_collection.json
          reporters: '["cli", "json"]'
     - name: Env vars
+      env:
+        cli-foo: ${{ github.event.client_payload.foo }}
+        cli-bar: ${{ github.event.client_payload.bar }}
       run: |
-       echo "Tenant-Name: ${foo}"
-       echo "Tenant-ID: ${bar}"
+       echo "Tenant-Name: ${cli-foo}"
+       echo "Tenant-ID: ${cli-bar}"
