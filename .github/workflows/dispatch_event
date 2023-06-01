@@ -1,0 +1,19 @@
+name: Execute Postman collection tests - Triggered event
+ 
+on:
+  repository_dispatch:
+    types: [some_event]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone the repo
+      uses: actions/checkout@v3
+      
+    - uses: actions/checkout@master
+    - name: Execute tests
+      uses: matt-ball/newman-action@master
+      with:
+         collection: petstore.postman_collection.json
+         reporters: '["cli", "json"]'
